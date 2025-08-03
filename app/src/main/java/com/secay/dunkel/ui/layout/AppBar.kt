@@ -48,16 +48,22 @@ fun AppBar(
   onNavigateToSettings: () -> Unit,
   modifier: Modifier = Modifier
 ) {
-  val appBarColors = TopAppBarDefaults.topAppBarColors(
-    containerColor = if (isServiceRunning) MaterialTheme.colorScheme.primaryContainer
-    else MaterialTheme.colorScheme.surface,
-    titleContentColor = if (isServiceRunning) MaterialTheme.colorScheme.onPrimaryContainer
-    else MaterialTheme.colorScheme.onSurface,
-    navigationIconContentColor = if (isServiceRunning) MaterialTheme.colorScheme.onPrimaryContainer
-    else MaterialTheme.colorScheme.onSurface,
-    actionIconContentColor = if (isServiceRunning) MaterialTheme.colorScheme.onPrimaryContainer
-    else MaterialTheme.colorScheme.onSurface
-  )
+  val appBarColors = if (isServiceRunning) {
+    TopAppBarDefaults.topAppBarColors(
+      containerColor = MaterialTheme.colorScheme.primaryContainer,
+      titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+      navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+      actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+    )
+  } else {
+    TopAppBarDefaults.topAppBarColors(
+      containerColor = MaterialTheme.colorScheme.surface,
+      titleContentColor = MaterialTheme.colorScheme.onSurface,
+      navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+      actionIconContentColor = MaterialTheme.colorScheme.onSurface
+    )
+  }
+
   val serviceButtonIcon = if (isServiceRunning) Icons.Filled.Stop else Icons.Outlined.PlayArrow
   val serviceButtonLabelRes = if (isServiceRunning) R.string.appbar_button_label_stop_service
   else R.string.appbar_button_label_start_service
