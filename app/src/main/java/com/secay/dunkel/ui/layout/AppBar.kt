@@ -31,12 +31,15 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.sp
+import androidx.navigation3.runtime.NavBackStack
 import com.secay.dunkel.R
 import com.secay.dunkel.ui.theme.bagelFatOneFamily
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar () {
+fun AppBar (
+  backStack: NavBackStack
+) {
   var checked by remember { mutableStateOf(false) }
   val size = ButtonDefaults.ExtraSmallIconSize
 
@@ -94,7 +97,7 @@ fun AppBar () {
         } },
         state = rememberTooltipState()
       ) {
-        IconButton( onClick = {} ) {
+        IconButton( onClick = { backStack.add(Settings) } ) {
           Icon(
             Icons.Filled.Settings,
             contentDescription = null
