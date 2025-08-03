@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun DunkelScreen (
-  /*isServiceRunning: Boolean*/
+  isServiceRunning: Boolean
 ) {
   Text("Dunkel Screen")
   /*Text(

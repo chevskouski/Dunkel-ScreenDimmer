@@ -65,7 +65,7 @@ fun MainScaffold() {
       modifier = Modifier.padding(innerPadding),
       onBack = { backStack.removeLastOrNull() },
       entryProvider = entryProvider {
-        entry<Dunkel> { DunkelScreen() }
+        entry<Dunkel> { DunkelScreen(isServiceRunning) }
         entry<Settings> { SettingsScreen() }
       },
       transitionSpec = {
