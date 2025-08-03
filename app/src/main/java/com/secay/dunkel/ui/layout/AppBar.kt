@@ -1,6 +1,10 @@
 package com.secay.dunkel.ui.layout
 
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
@@ -30,7 +34,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
-import androidx.compose.ui.unit.sp
 import com.secay.dunkel.R
 import com.secay.dunkel.ui.theme.bagelFatOneFamily
 
@@ -46,15 +49,25 @@ fun AppBar(
   modifier: Modifier = Modifier
 ) {
   val appBarColors = TopAppBarDefaults.topAppBarColors(
-    containerColor = if (isServiceRunning) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
-    titleContentColor = if (isServiceRunning) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
-    navigationIconContentColor = if (isServiceRunning) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
-    actionIconContentColor = if (isServiceRunning) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
+    containerColor = if (isServiceRunning) MaterialTheme.colorScheme.primaryContainer
+    else MaterialTheme.colorScheme.surface,
+    titleContentColor = if (isServiceRunning) MaterialTheme.colorScheme.onPrimaryContainer
+    else MaterialTheme.colorScheme.onSurface,
+    navigationIconContentColor = if (isServiceRunning) MaterialTheme.colorScheme.onPrimaryContainer
+    else MaterialTheme.colorScheme.onSurface,
+    actionIconContentColor = if (isServiceRunning) MaterialTheme.colorScheme.onPrimaryContainer
+    else MaterialTheme.colorScheme.onSurface
   )
   val serviceButtonIcon = if (isServiceRunning) Icons.Filled.Stop else Icons.Outlined.PlayArrow
-  val serviceButtonLabelRes = if (isServiceRunning) R.string.appbar_button_label_stop_service else R.string.appbar_button_label_start_service
-  val serviceButtonTooltipRes = if (isServiceRunning) R.string.appbar_button_stop_service else R.string.appbar_button_start_service
-  val serviceSemanticsDescription = if (isServiceRunning) "Service is currently running" else "Service is currently stopped"
+  val serviceButtonLabelRes = if (isServiceRunning) R.string.appbar_button_label_stop_service
+  else R.string.appbar_button_label_start_service
+  val serviceButtonTooltipRes = if (isServiceRunning) R.string.appbar_button_tooltip_stop_service
+  else R.string.appbar_button_tooltip_start_service
+
+  val serviceSemanticsDescription = stringResource(
+    if (isServiceRunning) R.string.semantics_service_running
+    else R.string.semantics_service_stopped
+  )
 
   TopAppBar(
     modifier = modifier,
@@ -66,48 +79,72 @@ fun AppBar(
     },
     navigationIcon = {
       if (canNavigateBack) {
-        IconButton(onClick = onNavigateBack) {
-          Icon(
-            imageVector = Icons.Filled.ArrowBackIosNew,
-            contentDescription = null
-          )
+        TooltipBox(
+          positionProvider = TooltipDefaults
+            .rememberTooltipPositionProvider(TooltipAnchorPosition.Below),
+          tooltip = { PlainTooltip { Text(
+            stringResource(R.string.tooltip_navigate_back)
+          ) } },
+          state = rememberTooltipState()
+        ) {
+          IconButton(onClick = onNavigateBack) {
+            Icon(
+              imageVector = Icons.Filled.ArrowBackIosNew,
+              contentDescription = stringResource(R.string.content_desc_navigate_back)
+            )
+          }
         }
       }
     },
     actions = {
-      TooltipBox(
-        positionProvider = TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
-        tooltip = { PlainTooltip { Text(stringResource(serviceButtonTooltipRes)) } },
-        state = rememberTooltipState()
+      AnimatedVisibility(
+        visible = isServiceRunning || !canNavigateBack,
+        enter = fadeIn(initialAlpha = 0.0f),
+        exit = fadeOut(animationSpec = tween()),
       ) {
-        val size = ButtonDefaults.ExtraSmallIconSize
-        TonalToggleButton(
-          checked = isServiceRunning,
-          onCheckedChange = onServiceToggle,
-          modifier = Modifier
-            .heightIn(size)
-            .semantics {
-              role = Role.Switch
-              stateDescription = serviceSemanticsDescription
-            },
-          shapes = ToggleButtonDefaults.shapesFor(size),
-          contentPadding = ButtonDefaults.contentPaddingFor(size),
+        TooltipBox(
+          positionProvider = TooltipDefaults
+            .rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
+          tooltip = { PlainTooltip { Text(stringResource(serviceButtonTooltipRes)) } },
+          state = rememberTooltipState()
         ) {
-          Icon(serviceButtonIcon, contentDescription = null)
-          Text(stringResource(serviceButtonLabelRes), fontSize = 12.sp)
+          val size = ButtonDefaults.ExtraSmallIconSize
+          TonalToggleButton(
+            checked = isServiceRunning,
+            onCheckedChange = onServiceToggle,
+            modifier = Modifier
+              .heightIn(size)
+              .semantics {
+                role = Role.Switch
+                stateDescription = serviceSemanticsDescription
+              },
+            shapes = ToggleButtonDefaults.shapesFor(size),
+            contentPadding = ButtonDefaults.contentPaddingFor(size),
+          ) {
+            Icon(
+              imageVector = serviceButtonIcon,
+              contentDescription = null
+            )
+            Text(
+              text = stringResource(serviceButtonLabelRes),
+              style = MaterialTheme.typography.labelSmall
+            )
+          }
         }
       }
 
       TooltipBox(
-        positionProvider = TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
-        tooltip = { PlainTooltip { Text(stringResource(R.string.appbar_tooltip_open_settings)) } },
+        positionProvider = TooltipDefaults
+          .rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
+        tooltip = { PlainTooltip { Text(
+          stringResource(R.string.appbar_tooltip_open_settings)
+        ) } },
         state = rememberTooltipState()
       ) {
-        // 4. Usar el callback para la navegación a ajustes
         IconButton(onClick = onNavigateToSettings) {
           Icon(
-            Icons.Filled.Settings,
-            contentDescription = null
+            imageVector = Icons.Filled.Settings,
+            contentDescription = stringResource(R.string.content_desc_settings)
           )
         }
       }

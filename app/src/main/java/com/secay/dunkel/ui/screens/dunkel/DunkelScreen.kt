@@ -5,8 +5,7 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun DunkelScreen (
-  /*isServiceRunning: Boolean,
-  onServiceToggle: (Boolean) -> Unit*/
+  /*isServiceRunning: Boolean*/
 ) {
   Text("Dunkel Screen")
   /*Text(

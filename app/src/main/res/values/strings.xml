@@ -1,12 +1,20 @@
 <resources>
     <string name="app_name">Dunkel</string>
 
+    <string name="content_desc_navigate_back">Navigate back</string>
+    <string name="tooltip_navigate_back">Back</string>
+    <string name="content_desc_settings">Open settings</string>
+    <!-- AppBar -->
+    <string name="appbar_button_tooltip_stop_service">Stop service</string>
+    <string name="appbar_button_tooltip_start_service">Start service</string>
     <string name="appbar_button_start_service">Start service</string>
     <string name="appbar_button_stop_service">Stop service</string>
     <string name="appbar_button_label_start_service">Start</string>
     <string name="appbar_button_label_stop_service">Stop</string>
     <string name="appbar_button_label_running_service">Service Running</string>"
     <string name="appbar_tooltip_open_settings">Open application settings</string>
+    <string name="semantics_service_running">Service is currently running</string>
+    <string name="semantics_service_stopped">Service is currently stopped</string>
 
     <string name="unknow_screen_title">Unknown</string>">
 
