@@ -4,6 +4,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun DunkelScreen () {
+fun DunkelScreen (
+  /*isServiceRunning: Boolean,
+  onServiceToggle: (Boolean) -> Unit*/
+) {
   Text("Dunkel Screen")
+  /*Text(
+    if (isServiceRunning) "Service läuft" else "Service läuft nicht"
+  )
+  Button(
+    onClick = {
+      onServiceToggle(!isServiceRunning)
+    }
+  ){
+    Text(
+      if (isServiceRunning) "Service beenden" else "Service starten"
+    )
+  }*/
 }

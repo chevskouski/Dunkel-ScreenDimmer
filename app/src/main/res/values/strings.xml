@@ -5,7 +5,12 @@
     <string name="appbar_button_stop_service">Stop service</string>
     <string name="appbar_button_label_start_service">Start</string>
     <string name="appbar_button_label_stop_service">Stop</string>
+    <string name="appbar_button_label_running_service">Service Running</string>"
     <string name="appbar_tooltip_open_settings">Open application settings</string>
+
+    <string name="unknow_screen_title">Unknown</string>">
+
+    <string name="settings_title">Settings</string>
 
     <array name="com_google_android_gms_fonts_certs">
         <item>@array/com_google_android_gms_fonts_certs_dev</item>

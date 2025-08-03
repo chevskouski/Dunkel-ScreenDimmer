@@ -6,12 +6,18 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.secay.dunkel.R
 import com.secay.dunkel.ui.screens.dunkel.DunkelScreen
 import com.secay.dunkel.ui.screens.settings.SettingsScreen
 import kotlinx.serialization.Serializable
@@ -21,24 +27,46 @@ data object Dunkel: NavKey
 
 @Serializable
 data object Settings: NavKey
+
 @Composable
-fun MainScaffold () {
+fun MainScaffold() {
   val backStack = rememberNavBackStack(Dunkel)
 
-  Scaffold (
-    topBar = { AppBar(backStack = backStack) }
+  val currentScreen by remember {
+    derivedStateOf { backStack.lastOrNull() }
+  }
+
+  val titleRes by remember {
+    derivedStateOf {
+      when (currentScreen) {
+        is Dunkel -> R.string.app_name
+        is Settings -> R.string.settings_title
+        else -> R.string.unknow_screen_title
+      }
+    }
+  }
+
+  var isServiceRunning by remember { mutableStateOf(false) }
+
+  Scaffold(
+    topBar = {
+      AppBar(
+        titleRes = titleRes,
+        canNavigateBack = backStack.size > 1,
+        isServiceRunning = isServiceRunning,
+        onServiceToggle = { isServiceRunning = it },
+        onNavigateBack = { backStack.removeLastOrNull() },
+        onNavigateToSettings = { backStack.add(Settings) }
+      )
+    }
   ) { innerPadding ->
     NavDisplay(
       backStack = backStack,
       modifier = Modifier.padding(innerPadding),
       onBack = { backStack.removeLastOrNull() },
       entryProvider = entryProvider {
-        entry<Dunkel>  {
-          DunkelScreen()
-        }
-        entry<Settings> {
-          SettingsScreen()
-        }
+        entry<Dunkel> { DunkelScreen() }
+        entry<Settings> { SettingsScreen() }
       },
       transitionSpec = {
         slideInHorizontally(initialOffsetX = { it }) togetherWith
